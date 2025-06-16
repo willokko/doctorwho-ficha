@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Personagem - Doctor Who RPG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0d1117; /* Fundo escuro */
+            color: #c9d1d9; /* Texto claro */
+        }
+        /* Estilo customizado para inputs para melhor contraste */
+        .form-input, .form-textarea {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            width: 100%;
+            border-radius: 6px;
+            padding: 8px 12px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #58a6ff; /* Azul Doctor Who */
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+        }
+        .form-label {
+            font-weight: 500;
+            color: #8b949e; /* Cinza mais claro para labels */
+            font-size: 0.875rem;
+        }
+        .card {
+            background-color: #161b22; /* Fundo dos cards */
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .card-title {
+            color: #58a6ff;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #30363d;
+            padding-bottom: 8px;
+        }
+        .stat-display {
+            background-color: #0d1117;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #58a6ff;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #8b949e;
+        }
+        .attribute-grid, .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .attribute-item, .skill-item {
+            background-color: #0d1117;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .attribute-item .form-input, .skill-item .form-input {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 4px;
+        }
+        /* Oculta as setas do input number */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-6">
+
+    <div class="max-w-2xl mx-auto">
+        <!-- Cabeçalho -->
+        <header class="card text-center">
+            <h1 class="text-3xl font-bold text-white mb-2">Doctor Who RPG</h1>
+            <p class="text-sm text-gray-400">Ficha de Personagem Editável</p>
+        </header>
+
+        <!-- Informações Básicas -->
+        <section class="card">
+            <h2 class="card-title">Informações do Personagem</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="char-name" class="form-label">Nome do Personagem</label>
+                    <input type="text" id="char-name" class="form-input">
+                </div>
+                <div>
+                    <label for="char-focus" class="form-label">Foco</label>
+                    <input type="text" id="char-focus" class="form-input">
+                </div>
+                <div>
+                    <label for="char-home" class="form-label">Mundo Natal</label>
+                    <input type="text" id="char-home" class="form-input">
+                </div>
+                 <div>
+                    <label for="char-player" class="form-label">Jogador</label>
+                    <input type="text" id="char-player" class="form-input">
+                </div>
+            </div>
+             <div class="mt-4">
+                <label for="char-short-goal" class="form-label">Objetivo de Curto Prazo</label>
+                <textarea id="char-short-goal" class="form-textarea" rows="2"></textarea>
+            </div>
+            <div class="mt-4">
+                <label for="char-long-goal" class="form-label">Objetivo de Longo Prazo</label>
+                <textarea id="char-long-goal" class="form-textarea" rows="2"></textarea>
+            </div>
+        </section>
+
+        <!-- Status Principais -->
+        <section class="card">
+             <div class="grid grid-cols-3 gap-4">
+                <div class="stat-display">
+                    <span id="vida-value" class="stat-value">27</span>
+                    <p class="stat-label">Vida</p>
+                </div>
+                <div class="stat-display">
+                    <span id="sanidade-value" class="stat-value">16</span>
+                    <p class="stat-label">Sanidade</p>
+                </div>
+                <div class="stat-display">
+                    <input type="number" id="story-points" class="stat-value bg-transparent text-center w-full" value="9">
+                    <p class="stat-label">Story Points</p>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2 text-center">Vida: (Força + Presença) x 3 | Sanidade: (Percepção + Criatividade) x 2</p>
+        </section>
+
+
+        <!-- Atributos -->
+        <section class="card">
+            <h2 class="card-title">Atributos</h2>
+            <div class="attribute-grid">
+                <div class="attribute-item">
+                    <label for="attr-awareness" class="form-label block text-center">Percepção</label>
+                    <input type="number" id="attr-awareness" class="form-input" value="4">
+                </div>
+                 <div class="attribute-item">
+                    <label for="attr-coordination" class="form-label block text-center">Coordenação</label>
+                    <input type="number" id="attr-coordination" class="form-input" value="4">
+                </div>
+                 <div class="attribute-item">
+                    <label for="attr-ingenuity" class="form-label block text-center">Criatividade</label>
+                    <input type="number" id="attr-ingenuity" class="form-input" value="6">
+                </div>
+                 <div class="attribute-item">
+                    <label for="attr-presence" class="form-label block text-center">Presença</label>
+                    <input type="number" id="attr-presence" class="form-input" value="5">
+                </div>
+                 <div class="attribute-item">
+                    <label for="attr-resolve" class="form-label block text-center">Determinação</label>
+                    <input type="number" id="attr-resolve" class="form-input" value="5">
+                </div>
+                 <div class="attribute-item">
+                    <label for="attr-strength" class="form-label block text-center">Força</label>
+                    <input type="number" id="attr-strength" class="form-input" value="4">
+                </div>
+            </div>
+        </section>
+
+        <!-- Habilidades -->
+        <section class="card">
+            <h2 class="card-title">Habilidades</h2>
+             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="skill-athletics" class="form-label">Atletismo</label>
+                    <input type="number" id="skill-athletics" class="form-input" value="0">
+                </div>
+                <div>
+                    <label for="skill-conflict" class="form-label">Conflito</label>
+                    <input type="number" id="skill-conflict" class="form-input" value="0">
+                </div>
+                 <div>
+                    <label for="skill-convince" class="form-label">Persuasão</label>
+                    <input type="number" id="skill-convince" class="form-input" value="4">
+                </div>
+                 <div>
+                    <label for="skill-craft" class="form-label">Artesanato</label>
+                    <input type="number" id="skill-craft" class="form-input" value="0">
+                </div>
+                <div>
+                    <label for="skill-intuition" class="form-label">Intuição</label>
+                    <input type="number" id="skill-intuition" class="form-input" value="2">
+                </div>
+                <div>
+                    <label for="skill-knowledge" class="form-label">Conhecimento</label>
+                    <input type="number" id="skill-knowledge" class="form-input" value="4">
+                </div>
+                 <div>
+                    <label for="skill-medicine" class="form-label">Medicina</label>
+                    <input type="number" id="skill-medicine" class="form-input" value="3">
+                </div>
+                 <div>
+                    <label for="skill-science" class="form-label">Ciência</label>
+                    <input type="number" id="skill-science" class="form-input" value="0">
+                </div>
+                <div>
+                    <label for="skill-subterfuge" class="form-label">Subterfúgio</label>
+                    <input type="number" id="skill-subterfuge" class="form-input" value="0">
+                </div>
+                <div>
+                    <label for="skill-survival" class="form-label">Sobrevivência</label>
+                    <input type="number" id="skill-survival" class="form-input" value="0">
+                </div>
+                <div>
+                    <label for="skill-technology" class="form-label">Tecnologia</label>
+                    <input type="number" id="skill-technology" class="form-input" value="5">
+                </div>
+                <div>
+                    <label for="skill-transport" class="form-label">Transporte</label>
+                    <input type="number" id="skill-transport" class="form-input" value="0">
+                </div>
+            </div>
+        </section>
+        
+        <!-- Traços e Inventário -->
+        <section class="card">
+            <h2 class="card-title">Traços e Equipamentos</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="char-traits" class="form-label">Traços Positivos</label>
+                    <textarea id="char-traits" class="form-textarea" rows="5"></textarea>
+                </div>
+                 <div>
+                    <label for="char-flaws" class="form-label">Traços Falhos</label>
+                    <textarea id="char-flaws" class="form-textarea" rows="5"></textarea>
+                </div>
+            </div>
+             <div class="mt-4">
+                <label for="char-inventory" class="form-label">Inventário</label>
+                <textarea id="char-inventory" class="form-textarea" rows="6"></textarea>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Botão Rolador de Dados -->
+    <button id="dice-roller-btn" class="fixed bottom-4 right-4 bg-blue-600 hover:bg-blue-700 text-white font-bold w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-transform transform hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4z"/> <!-- Simple dice-like cross -->
+        </svg>
+    </button>
+    
+    <!-- Modal de Resultado do Dado -->
+    <div id="dice-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden">
+        <div class="bg-gray-800 border border-gray-700 p-8 rounded-lg shadow-2xl text-center">
+            <h3 class="text-xl font-bold text-blue-400 mb-4">Resultado do d20</h3>
+            <p id="dice-result" class="text-7xl font-bold text-white">20</p>
+            <button id="close-modal-btn" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const allInputs = document.querySelectorAll('input, textarea');
+            const sheetDataKey = 'doctorWhoCharacterSheet';
+
+            // --- CÁLCULOS DE STATUS ---
+            const vidaValue = document.getElementById('vida-value');
+            const sanidadeValue = document.getElementById('sanidade-value');
+            
+            const strengthInput = document.getElementById('attr-strength');
+            const presenceInput = document.getElementById('attr-presence');
+            const awarenessInput = document.getElementById('attr-awareness');
+            const ingenuityInput = document.getElementById('attr-ingenuity');
+
+            function updateCalculatedStats() {
+                const strength = parseInt(strengthInput.value) || 0;
+                const presence = parseInt(presenceInput.value) || 0;
+                const awareness = parseInt(awarenessInput.value) || 0;
+                const ingenuity = parseInt(ingenuityInput.value) || 0;
+
+                const vida = (strength + presence) * 3;
+                const sanidade = (awareness + ingenuity) * 2;
+                
+                vidaValue.textContent = vida;
+                sanidadeValue.textContent = sanidade;
+            }
+
+            // --- SALVAMENTO E CARREGAMENTO ---
+            function saveSheet() {
+                const data = {};
+                allInputs.forEach(input => {
+                    data[input.id] = input.value;
+                });
+                localStorage.setItem(sheetDataKey, JSON.stringify(data));
+                console.log('Ficha salva!');
+            }
+
+            function loadSheet() {
+                const savedData = localStorage.getItem(sheetDataKey);
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    allInputs.forEach(input => {
+                        if (data[input.id] !== undefined) {
+                            input.value = data[input.id];
+                        }
+                    });
+                    console.log('Ficha carregada!');
+                }
+                updateCalculatedStats(); // Calcula os status após carregar os dados
+            }
+
+            // Adiciona event listeners para salvar em cada mudança
+            allInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                   saveSheet();
+                   if (['attr-strength', 'attr-presence', 'attr-awareness', 'attr-ingenuity'].includes(input.id)) {
+                       updateCalculatedStats();
+                   }
+                });
+            });
+
+            // --- ROLADOR DE DADOS ---
+            const diceRollerBtn = document.getElementById('dice-roller-btn');
+            const diceModal = document.getElementById('dice-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const diceResult = document.getElementById('dice-result');
+
+            diceRollerBtn.addEventListener('click', () => {
+                const result = Math.floor(Math.random() * 20) + 1;
+                diceResult.textContent = result;
+                diceModal.classList.remove('hidden');
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                diceModal.classList.add('hidden');
+            });
+            
+            // Fecha o modal se clicar fora da caixa de resultado
+            diceModal.addEventListener('click', (event) => {
+                if (event.target === diceModal) {
+                    diceModal.classList.add('hidden');
+                }
+            });
+
+            // Carrega os dados ao iniciar a página
+            loadSheet();
+        });
+    </script>
+</body>
+</html>
